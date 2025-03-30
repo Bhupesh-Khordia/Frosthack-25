@@ -37,8 +37,9 @@ Make sure you have the following installed:
 3. **Adjust paths**
    Adjust folder path in `pdf.py`
 
-3. **Run the Pathway RAG Implementation:**
+4. **Run the Pathway RAG Implementation:**
    ```bash
+   First, load the bank data that you want to test in input folder. Then run the following:
    python pdf.py
    python main.py
    ```
