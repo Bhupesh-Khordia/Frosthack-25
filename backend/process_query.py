@@ -1,8 +1,10 @@
 import os
 import google.generativeai as genai
 import sys
+from dotenv import load_dotenv
 
-api_key = "AIzaSyBcK1uJUBAWaBFEjz3kKkF_V4XCdEatn_A"
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
 
 def read_txt_file(file_path):
     """Read the content of a text file."""
