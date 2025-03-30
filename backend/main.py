@@ -1,10 +1,17 @@
 import os
+import pathway as pw
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import PathwayVectorClient
-
+from pathway.xpacks.llm.vector_store import VectorStoreServer
+from langchain.text_splitter import CharacterTextSplitter
 
 os.environ["HF_TOKEN"] = "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"
 
+data = pw.io.fs.read(
+    "/backend/data",
+    format="binary",
+    with_metadata=True,
+)
 
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 # embeddings.embed_query("Hello, world!")
