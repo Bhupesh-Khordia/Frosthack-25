@@ -139,8 +139,8 @@ def batch_process_pdfs_and_json(pdf_folder, json_folder, output_text_folder):
 # --------------------------- Export This Function ---------------------------
 
 if __name__ == "__main__":
-    pdf_folder = r"E:\PROJECTS\Frosthack-25\backend\input"
-    json_folder = r"E:\PROJECTS\Frosthack-25\backend\data"
-    output_text_folder = r"E:\PROJECTS\Frosthack-25\backend\output"
+    pdf_folder = r"C:\Users\Siddhant\Frosthack-25\backend\input"
+    json_folder = r"C:\Users\Siddhant\Frosthack-25\backend\data"
+    output_text_folder = r"C:\Users\Siddhant\Frosthack-25\backend\output"
 
     batch_process_pdfs_and_json(pdf_folder, json_folder, output_text_folder)
