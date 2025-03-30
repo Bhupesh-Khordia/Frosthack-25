@@ -34,7 +34,7 @@ Make sure you have the following installed:
    pip install -qU langchain_huggingface
    ```
 
-3. **Adjust paths**
+3. **Adjust paths:**
    Adjust folder path in `pdf.py`
 
 4. **Run the Pathway RAG Implementation:**
