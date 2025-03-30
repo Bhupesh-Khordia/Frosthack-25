@@ -50,6 +50,15 @@ def main():
         if user_query:
             st.write(f"You asked: {user_query}")
             st.write("AI Response: (Coming Soon)")
+            query_response = requests.post(
+                "http://localhost:8001/rest/process_query",
+                json={"query": user_query},  # Send the query as a POST request
+            )
+            if query_response.status_code == 200:
+                answer = query_response.json().get('answer')  # Extract the 'answer' field
+                st.success(f"AI Response: {answer}")
+            else:
+                st.error(f"Failed to process your query. Agent Response: {query_response.text}")
 
 if __name__ == "__main__":
     main()

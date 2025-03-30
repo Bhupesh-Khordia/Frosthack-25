@@ -5,16 +5,25 @@ from uagents import Agent, Context, Model
  
 class Request(Model):
     text: str
+
+class Query(Model):
+    query: str
  
 class Response(Model):
     timestamp: int
     text: str
     agent_address: str
+
+class QueryResponse(Model):
+    timestamp: int
+    text: str
+    agent_address: str
+    response: str
  
 class EmptyMessage(Model):
     pass
  
-agent = Agent(name="Rest API", seed="your_seed_phrase", port=8000, endpoint=["http://localhost:8000/submit"])
+agent = Agent(name="Rest API", seed="fetch", port=8000, endpoint=["http://localhost:8000/submit"])
 
 import subprocess
 
@@ -33,6 +42,27 @@ async def process_pdf(ctx: Context, req: Request) -> Response:
         ctx.logger.error(f"Error processing PDF: {e}")
         return Response(
             text=f"Failed to process {req.text}: {e}",
+            agent_address=ctx.agent.address,
+            timestamp=int(time.time()),
+        )
+    
+@agent.on_rest_post("/rest/process_query", Query, Response)
+async def process_query(ctx: Context, req: Query) -> Response:
+    ctx.logger.info(f"Processing Query: {req.query}")
+    try:
+        # Call pdf.py with the uploaded file path
+        result = subprocess.run(["python", "process_query.py", req.query], capture_output=True, text=True)
+        ctx.logger.info(result)
+        return Response(
+            text=f"Successfully processed Query",
+            # response=result.stdout.strip(),
+            agent_address=ctx.agent.address,
+            timestamp=int(time.time()),
+        )
+    except Exception as e:
+        ctx.logger.error(f"Error processing Query: {e}")
+        return Response(
+            text=f"Failed to process query: {e}",
             agent_address=ctx.agent.address,
             timestamp=int(time.time()),
         )
