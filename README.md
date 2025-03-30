@@ -61,9 +61,16 @@ Make sure you have the following installed:
    pip install langchain langchain_community pathway[xpack-llm-docs] pdfplumber faiss-cpu google.generativeai google.genai uagents streamlit plotly sentence-transformers
    pip install -qU langchain_huggingface
    ```
-3. **Adjust paths:**
+3. **Create a `.env` file:**
+      Create a `.env` file in the root directory of the project and add your Gemini API Key to it:
+      ```env
+      # API keys
+      GEMINI_API_KEY=your_gemini_api_key
+      ```
+      Replace `your_gemini_api_key` with your actual gemini key.
+4. **Adjust paths:**
    Adjust folder path in `pdf.py`, `process_query.py`, `main.py`.
-4. **Run all agents in separate terminals:**
+5. **Run all agents in separate terminals:**
    ```bash
    cd backend
    python run fetch_agent.py
@@ -71,7 +78,7 @@ Make sure you have the following installed:
    python run query_agent.py
    python run chart_agent.py
    ```
-5. **Run your app:**
+6. **Run your app:**
    ```bash
    cd ..
    cd frontend
