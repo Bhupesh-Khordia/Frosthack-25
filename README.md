@@ -24,7 +24,7 @@ Make sure you have the following installed:
 ### 📥 Installation Steps
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-repo/frosthack-finance-tracker.git
+   git clone https://github.com/Bhupesh-Khordia/Frosthack-25.git
    cd Frosthack-25
    cd backend
    ```
