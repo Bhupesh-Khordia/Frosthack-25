@@ -2,6 +2,12 @@ import streamlit as st
 import requests
 import os
 
+import threading
+import subprocess
+
+
+
+
 def upload_page():
     st.subheader("📥 Upload PDF Files")
     uploaded_files = st.file_uploader("Choose one or more PDF files", type="pdf", accept_multiple_files=True)
@@ -147,5 +153,22 @@ def main():
     elif page == "📈 Generate Charts":
         charts_page()
 
+def run_script(script_name):
+    subprocess.run(["python", f"../backend/{script_name}"])
+
+def run_all_scripts():
+    threads = []
+    scripts = ["chart_agent.py", "embedding_agent.py", "fetch_agent.py", "query_agent.py"]
+    
+    for script in scripts:
+        thread = threading.Thread(target=run_script, args=(script,))
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    st.success("All backend scripts executed!")
 if __name__ == "__main__":
     main()
+    run_all_scripts()
