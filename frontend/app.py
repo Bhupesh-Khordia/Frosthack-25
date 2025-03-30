@@ -62,10 +62,22 @@ def track_expenses_page():
     st.subheader("📊 Track Expenses")
     st.write("🚧 This feature is under development. Stay tuned!")
 
+# New Charts Page
+def charts_page():
+    st.subheader("📊 Generate Charts")
+    uploaded_files = os.listdir("../backend/input")
+    if uploaded_files:
+        user_query = st.text_input("Enter the prompt for the chart you want to generate:")
+        if user_query:
+            st.write(f"🗨️ *You asked:* {user_query}")
+            st.write("🔎 Generating chart...")
+    else:
+        st.warning("⚠️ Please upload at least one PDF before trying to generate a chart.")
+
 def main():
     # Page Title and Styling
     st.set_page_config(page_title="Bank Statement Assistant", layout="wide")
-    st.title("📄 Bank Statement Upload and AI Assistant")
+    st.title("📄 Track Your Personal Finance Using the power of AI")
 
     st.markdown(
         """
@@ -89,9 +101,9 @@ def main():
 
     # Sidebar Section with Cool Design
     with st.sidebar:
-        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", caption="Bank Assistant")
+        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", caption="Bank Assistant", use_container_width=True)
         st.markdown("## 🌟 Features")
-        page = st.radio("🚀 Navigate to:", ["📥 Upload Bank Statements", "💬 Ask AI Questions", "📊 Track Expenses"])
+        page = st.radio("🚀 Navigate to:", ["📥 Upload Bank Statements", "💬 Ask AI Questions", "📈 Generate Charts", "📊 Track Expenses"])
         st.markdown("---")
         st.write("💡 Tip: Try asking questions like 'How much did I spend last month?'")
 
@@ -102,6 +114,8 @@ def main():
         assistant_page()
     elif page == "📊 Track Expenses":
         track_expenses_page()
+    elif page == "📈 Generate Charts":
+        charts_page()
 
 if __name__ == "__main__":
     main()
