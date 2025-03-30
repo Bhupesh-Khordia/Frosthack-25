@@ -29,9 +29,11 @@ def query_gemini(context, query):
         Context: {context}
 
         Question: {query}
+
+        Instructions: Generate code in python using the library plotly.express as px and the final plot should be stored in variable named fig. Only write the code and nothing else. Give python code only in plain text(not in any other format) with proper indentation that can be run from any other device without any modification.
         """
 
-        response = model.generate_content(prompt, config=types.GenerateContentConfig(system_instruction="Generate code in python using the library plotly.express as px and the final plot should be stored in variable named fig. Only write the code and nothing else."))
+        response = model.generate_content(prompt)
 
         return response.text
 

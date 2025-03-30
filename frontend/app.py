@@ -34,8 +34,10 @@ def assistant_page():
     st.subheader("💬 AI Assistant")
     uploaded_files = os.listdir("../backend/input")
     if uploaded_files:
-        user_query = st.text_input("Ask a question about your expenses:")
-        if user_query:
+        with st.form(key="query_form"):
+            user_query = st.text_input("Ask a question about your expenses:")
+            submit_button = st.form_submit_button("Submit")
+        if submit_button and user_query:
             st.write(f"🗨 *You asked:* {user_query}")
             response = requests.post(
                 "http://localhost:8002/rest/retrieve_closest",
@@ -58,17 +60,17 @@ def assistant_page():
     else:
         st.warning("⚠ Please upload at least one PDF before asking a question.")
 
-def track_expenses_page():
-    st.subheader("📊 Track Expenses")
-    st.write("🚧 This feature is under development. Stay tuned!")
+
 
 # New Charts Page
 def charts_page():
     st.subheader("📊 Generate Charts")
     uploaded_files = os.listdir("../backend/input")
     if uploaded_files:
-        user_query = st.text_input("Enter the prompt for the chart you want to generate:")
-        if user_query:
+        with st.form(key="chart_query_form"):
+            user_query = st.text_input("Enter the prompt for the chart you want to generate:")
+            submit_button = st.form_submit_button("Submit")
+        if submit_button and user_query:
             st.write(f"🗨️ *You asked:* {user_query}")
             st.write("🔎 Generating chart...")
             response = requests.post(
@@ -83,13 +85,26 @@ def charts_page():
                 )
                 if query_response.status_code == 200:
                     answer = query_response.json().get('answer')
-                    st.success(f"🤖 AI Response: {answer}")
+                    answer = answer[9 : -3]
+                    local_vars = {}
+                    exec(answer, {}, local_vars)
+    
+                    # Get the figure from local_vars
+                    fig = local_vars.get("fig")
+    
+                    # Display the plot if fig exists
+                    if fig:
+                        st.title("📈 Generated Chart")
+                        st.plotly_chart(fig, use_container_width=True)
+                    else:
+                        st.error("No figure found in the executed code.")
                 else:
                     st.error(f"❗ Failed to plot the chart. Error: {query_response.text}")
             else:
                 st.error(f"❗ Failed to plot the chart. Error: {response.text}")
     else:
         st.warning("⚠️ Please upload at least one PDF before trying to generate a chart.")
+
 
 def main():
     # Page Title and Styling
@@ -120,7 +135,7 @@ def main():
     with st.sidebar:
         st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", caption="Bank Assistant")
         st.markdown("## 🌟 Features")
-        page = st.radio("🚀 Navigate to:", ["📥 Upload Bank Statements", "💬 Ask AI Questions", "📈 Generate Charts", "📊 Track Expenses"])
+        page = st.radio("🚀 Navigate to:", ["📥 Upload Bank Statements", "💬 Ask AI Questions", "📈 Generate Charts"])
         st.markdown("---")
         st.write("💡 Tip: Try asking questions like 'How much did I spend last month?'")
 
@@ -129,8 +144,6 @@ def main():
         upload_page()
     elif page == "💬 Ask AI Questions":
         assistant_page()
-    elif page == "📊 Track Expenses":
-        track_expenses_page()
     elif page == "📈 Generate Charts":
         charts_page()
 
