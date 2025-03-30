@@ -106,6 +106,45 @@ def charts_page():
         st.warning("⚠️ Please upload at least one PDF before trying to generate a chart.")
 
 
+
+
+def fetch_and_plot_chart(prompt, path, title):
+    query_response = requests.post(
+        "http://localhost:8003/rest/plot_chart",
+        json={"query": prompt, "path": path},
+    )
+    if query_response.status_code == 200:
+        answer = query_response.json().get('answer')
+        answer = answer[9 : -3]
+        local_vars = {}
+        exec(answer, {}, local_vars)
+
+        fig = local_vars.get("fig")
+
+        if fig:
+            st.title(title)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("No figure found in the executed code.")
+    else:
+        st.error(f"❗ Failed to plot the chart. Error: {query_response.text}")
+
+def track_page():
+    st.subheader("📊 Track Insights")
+    uploaded_files = os.listdir("../backend/input")
+
+    if uploaded_files:
+        selected_file = st.selectbox("Select a file to view insights:", uploaded_files)
+        file_path = selected_file[:-4] + "_cleaned.txt"
+
+        fetch_and_plot_chart("Generate a line plot showing trend of Balance.", file_path, "📈 Trend of Balance in Your Account")
+        fetch_and_plot_chart("Generate a bar plot showing distribution of credit and debit.", file_path, "📊 Categorized Expenses")
+        fetch_and_plot_chart("Generate a pie chart showing distribution of expenses and income.", file_path, "🥧 Expense Distribution")
+
+    else:
+        st.warning("⚠️ Please upload at least one PDF before trying to track insights.")
+
+
 def main():
     # Page Title and Styling
     st.set_page_config(page_title="Bank Statement Assistant", layout="wide")
@@ -135,7 +174,7 @@ def main():
     with st.sidebar:
         st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", caption="Bank Assistant")
         st.markdown("## 🌟 Features")
-        page = st.radio("🚀 Navigate to:", ["📥 Upload Bank Statements", "💬 Ask AI Questions", "📈 Generate Charts"])
+        page = st.radio("🚀 Navigate to:", ["📥 Upload Bank Statements", "💬 Ask AI Questions", "📈 Generate Charts", "📊 Track Insights"])
         st.markdown("---")
         st.write("💡 Tip: Try asking questions like 'How much did I spend last month?'")
 
@@ -146,6 +185,8 @@ def main():
         assistant_page()
     elif page == "📈 Generate Charts":
         charts_page()
+    elif page == "📊 Track Insights":
+        track_page()
 
 if __name__ == "__main__":
     main()

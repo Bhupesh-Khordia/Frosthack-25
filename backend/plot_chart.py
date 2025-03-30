@@ -30,7 +30,7 @@ def query_gemini(context, query):
 
         Question: {query}
 
-        Instructions: Generate code in python using the library plotly.express as px and the final plot should be stored in variable named fig. Only write the code and nothing else. Give python code only in plain text(not in any other format) with proper indentation that can be run from any other device without any modification.
+        Instructions: Generate code in python using the library plotly.express as px and the final plot should be stored in variable named fig. Only write the code and nothing else. Give python code only in plain text(not in any other format) with proper indentation that can be run from any other device without any modification. Do not create some functions, just give simple code to plot, last line should be fig = ..., no other line. If the arrays in data file that you create are of different length then trim the arrays to min length among them so that plotting them doesn't give error. Do this step always, do not forget.
         """
 
         response = model.generate_content(prompt)
@@ -47,7 +47,7 @@ def main():
         return
 
     # Path to the output folder
-    output_folder = r"C:\Users\Siddhant\Frosthack-25\backend\output"
+    output_folder = r"D:\Important Documents\Placement\Projects\Frosthack-25\backend\output"
 
     file_name = sys.argv[2]  # The name of the text file to read
 
