@@ -30,7 +30,7 @@ Make sure you have the following installed:
    ```
 2. **Install Dependencies:**
    ```bash
-   pip install langchain langchain_community pathway[xpack-llm-docs] pdfplumber
+   pip install langchain langchain_community pathway[xpack-llm-docs] pdfplumber faiss-cpu google.generativeai uagents
    pip install -qU langchain_huggingface
    ```
 
