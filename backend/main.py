@@ -11,7 +11,7 @@ CHUNK_MAP_FILE = r"C:\Users\Siddhant\Frosthack-25\backend\chunk_map.txt"
 
 # Ensure the output folder exists
 if not os.path.exists(OUTPUT_FOLDER):
-    print(f"Error: Folder '{OUTPUT_FOLDER}' does not exist.")
+    # print(f"Error: Folder '{OUTPUT_FOLDER}' does not exist.")
     exit(1)
 
 # Initialize HuggingFace Embeddings model
@@ -41,7 +41,7 @@ def load_and_store_embeddings():
                 filenames.append(file)
 
     if not texts:
-        print("No text files found in the output folder.")
+        # print("No text files found in the output folder.")
         return
 
     # Split text into chunks
@@ -71,14 +71,22 @@ def load_and_store_embeddings():
 
     return filenames
 
+import sys
+
 # Function to process queries
-def search_documents(query: str, top_k=1):
+def search_documents(top_k=1):
     if not os.path.exists(EMBEDDINGS_FILE):
-        print("Error: Embeddings file not found. Run load_and_store_embeddings() first.")
+        # print("Error: Embeddings file not found. Run load_and_store_embeddings() first.")
         return []
 
     # Load stored embeddings
     index = faiss.read_index(EMBEDDINGS_FILE)
+
+    if len(sys.argv) < 2:
+        # print("Error: No query provided.")
+        return
+
+    query = sys.argv[1] 
 
     # Preprocess and embed query
     query = preprocess_text(query)
@@ -97,13 +105,12 @@ def search_documents(query: str, top_k=1):
     results = [(chunk_map[i], distances[0][j]) for j, i in enumerate(indices[0]) if i < len(chunk_map)]
 
     # Print results with similarity scores for debugging
-    print("Top Matches (with scores):", results)
+    # print("Top Matches (with scores):", results)
 
     return [x[0] for x in results]
 
 # Run embedding process
 if __name__ == "__main__":
     load_and_store_embeddings()
-    query = "How much money did I spend on 09-Dec-2011"
-    results = search_documents(query)
-    print("Top matching documents:",results[0])
+    results = search_documents()
+    print(results[0])

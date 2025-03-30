@@ -2,17 +2,10 @@ import time
 from typing import Any, Dict
  
 from uagents import Agent, Context, Model
- 
-class Request(Model):
-    text: str
 
 class Query(Model):
     query: str
- 
-class Response(Model):
-    timestamp: int
-    text: str
-    agent_address: str
+    path: str
 
 class QueryResponse(Model):
     timestamp: int
@@ -31,7 +24,7 @@ import subprocess
 async def process_query(ctx: Context, req: Query) -> QueryResponse:
     ctx.logger.info(f"Processing Query: {req.query}")
     try:
-        result = subprocess.run(["python", "process_query.py", req.query], capture_output=True, text=True)
+        result = subprocess.run(["python", "process_query.py", req.query, req.path], capture_output=True, text=True)
         ctx.logger.info(result.stdout.strip())
         return QueryResponse(
             text=f"Successfully processed Query",
@@ -41,9 +34,10 @@ async def process_query(ctx: Context, req: Query) -> QueryResponse:
         )
     except Exception as e:
         ctx.logger.error(f"Error processing Query: {e}")
-        return Response(
+        return QueryResponse(
             text=f"Failed to process query: {e}",
             agent_address=ctx.agent.address,
+            answer=None,
             timestamp=int(time.time()),
         )
  

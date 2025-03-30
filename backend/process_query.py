@@ -38,13 +38,16 @@ def query_gemini(context, query):
         return None
 
 def main():
-    # Path to the output folder
-    output_folder = r"e:\PROJECTS\Frosthack-25\backend\output"
-    txt_file = os.path.join(output_folder, "bank_cleaned.txt")
-
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print("Error: No query provided.")
         return
+
+    # Path to the output folder
+    output_folder = r"C:\Users\Siddhant\Frosthack-25\backend\output"
+
+    file_name = sys.argv[2]  # The name of the text file to read
+
+    txt_file = os.path.join(output_folder, file_name)
 
     user_query = sys.argv[1] 
 

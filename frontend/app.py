@@ -10,14 +10,14 @@ def upload_page():
         st.success(f"{len(uploaded_files)} file(s) uploaded successfully!")
         for uploaded_file in uploaded_files:
             with st.expander(f"📑 {uploaded_file.name}"):
-                st.write(f"- **File Type:** {uploaded_file.type}")
-                st.write(f"- **File Size:** {uploaded_file.size / 1024:.2f} KB")
+                st.write(f"- *File Type:* {uploaded_file.type}")
+                st.write(f"- *File Size:* {uploaded_file.size / 1024:.2f} KB")
 
                 # Save the file
                 file_path = f"../backend/input/{uploaded_file.name}"
                 with open(file_path, "wb") as f:
                     f.write(uploaded_file.read())
-                    st.write(f"✅ **{uploaded_file.name}** saved successfully!")
+                    st.write(f"✅ *{uploaded_file.name}* saved successfully!")
 
                 # Process with the AI Agent
                 st.write("🔎 Processing file...")
@@ -36,18 +36,27 @@ def assistant_page():
     if uploaded_files:
         user_query = st.text_input("Ask a question about your expenses:")
         if user_query:
-            st.write(f"🗨️ **You asked:** {user_query}")
-            query_response = requests.post(
-                "http://localhost:8001/rest/process_query",
+            st.write(f"🗨 *You asked:* {user_query}")
+            response = requests.post(
+                "http://localhost:8002/rest/retrieve_closest",
                 json={"query": user_query},
             )
-            if query_response.status_code == 200:
-                answer = query_response.json().get('answer')
-                st.success(f"🤖 AI Response: {answer}")
+            if response.status_code == 200:
+                path = response.json().get('path')
+                query_response = requests.post(
+                    "http://localhost:8001/rest/process_query",
+                    json={"query": user_query, "path": path},
+                )
+                if query_response.status_code == 200:
+                    answer = query_response.json().get('answer')
+                    st.success(f"🤖 AI Response: {answer}")
+                else:
+                    st.error(f"❗ Failed to process your query. Error: {query_response.text}")
             else:
-                st.error(f"❗ Failed to process your query. Error: {query_response.text}")
+                st.error(f"❗ Failed to process your query. Error: {response.text}")
+                
     else:
-        st.warning("⚠️ Please upload at least one PDF before asking a question.")
+        st.warning("⚠ Please upload at least one PDF before asking a question.")
 
 def track_expenses_page():
     st.subheader("📊 Track Expenses")
@@ -80,11 +89,11 @@ def main():
 
     # Sidebar Section with Cool Design
     with st.sidebar:
-        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", caption="Bank Assistant", use_container_width=True)
+        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", caption="Bank Assistant")
         st.markdown("## 🌟 Features")
         page = st.radio("🚀 Navigate to:", ["📥 Upload Bank Statements", "💬 Ask AI Questions", "📊 Track Expenses"])
         st.markdown("---")
-        st.write("💡 Tip: Try asking questions like _'How much did I spend last month?'_")
+        st.write("💡 Tip: Try asking questions like 'How much did I spend last month?'")
 
     # Navigation Logic
     if page == "📥 Upload Bank Statements":
