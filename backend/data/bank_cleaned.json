@@ -1,290 +1,258 @@
 [
     {
-        "Txn Date": "3 May 2018",
-        "Value\nDate": "3 May 2018",
         "Description": "MCC ISSUE CHARGES--\n38976288",
         "Ref No./Cheque\nNo.": "38976288",
         "Debit": "88.50",
         "Credit": "",
-        "Balance": "75,134.21"
+        "Balance": "75,134.21",
+        "Date": "03-May-2018"
     },
     {
-        "Txn Date": "3 May 2018",
-        "Value\nDate": "3 May 2018",
         "Description": "TO TRANSFER-HOUSING\nLOAN CLOSURE-",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n30120247541",
         "Debit": "32,652.00",
         "Credit": "",
-        "Balance": "42,482.21"
+        "Balance": "42,482.21",
+        "Date": "03-May-2018"
     },
     {
-        "Txn Date": "4 May 2018",
-        "Value\nDate": "4 May 2018",
         "Description": "TO TRANSFER-EDUCATION\nLOAN CLOSURE-",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n33975605481",
         "Debit": "21,739.00",
         "Credit": "",
-        "Balance": "20,743.21"
+        "Balance": "20,743.21",
+        "Date": "04-May-2018"
     },
     {
-        "Txn Date": "10 May\n2018",
-        "Value\nDate": "10 May\n2018",
         "Description": "BY TRANSFER-INB\nIMPS812923125449/22222222\n22/XX0317/Remitly Tr-",
         "Ref No./Cheque\nNo.": "MAB00011671487\n5\nMAB00011671487\n5",
         "Debit": "",
         "Credit": "70,006.68",
-        "Balance": "90,749.89"
+        "Balance": "90,749.89",
+        "Date": "10-May-2018"
     },
     {
-        "Txn Date": "10 May\n2018",
-        "Value\nDate": "10 May\n2018",
         "Description": "WITHDRAWAL TRANSFER--",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n31942153944",
         "Debit": "10,000.00",
         "Credit": "",
-        "Balance": "80,749.89"
+        "Balance": "80,749.89",
+        "Date": "10-May-2018"
     },
     {
-        "Txn Date": "17 May\n2018",
-        "Value\nDate": "17 May\n2018",
         "Description": "BY TRANSFER-INB payback-",
         "Ref No./Cheque\nNo.": "ITR3333997\nTRANSFER\nFROM\n52209892328",
         "Debit": "",
         "Credit": "40,000.00",
-        "Balance": "1,20,749.89"
+        "Balance": "1,20,749.89",
+        "Date": "17-May-2018"
     },
     {
-        "Txn Date": "22 May\n2018",
-        "Value\nDate": "22 May\n2018",
         "Description": "BY TRANSFER-\n8200596190328 21BZ3SB IOC\nRef No3000028105-",
         "Ref No./Cheque\nNo.": "TRANSFER\nFROM\n4599421105210",
         "Debit": "",
         "Credit": "203.10",
-        "Balance": "1,20,952.99"
+        "Balance": "1,20,952.99",
+        "Date": "22-May-2018"
     },
     {
-        "Txn Date": "28 May\n2018",
-        "Value\nDate": "28 May\n2018",
         "Description": "TO TRANSFER-PMSBY\nRENEWAL\nSBISB03606201814523679117\n-",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n4899274105218",
         "Debit": "12.00",
         "Credit": "",
-        "Balance": "1,20,940.99"
+        "Balance": "1,20,940.99",
+        "Date": "28-May-2018"
     },
     {
-        "Txn Date": "10 Jun\n2018",
-        "Value\nDate": "10 Jun\n2018",
         "Description": "WITHDRAWAL TRANSFER--",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n31942153944",
         "Debit": "10,000.00",
         "Credit": "",
-        "Balance": "1,10,940.99"
+        "Balance": "1,10,940.99",
+        "Date": "10-Jun-2018"
     },
     {
-        "Txn Date": "22 Jun\n2018",
-        "Value\nDate": "22 Jun\n2018",
         "Description": "CASH CHEQUE-CASH\nWITHDRAWAL BY CHEQUE-\n367951",
         "Ref No./Cheque\nNo.": "367951",
         "Debit": "35,000.00",
         "Credit": "",
-        "Balance": "75,940.99"
+        "Balance": "75,940.99",
+        "Date": "22-Jun-2018"
     },
     {
-        "Txn Date": "25 Jun\n2018",
-        "Value\nDate": "25 Jun\n2018",
         "Description": "CREDIT INTEREST--",
         "Ref No./Cheque\nNo.": "",
         "Debit": "",
         "Credit": "820.00",
-        "Balance": "76,760.99"
+        "Balance": "76,760.99",
+        "Date": "25-Jun-2018"
     },
     {
-        "Txn Date": "26 Jun\n2018",
-        "Value\nDate": "26 Jun\n2018",
         "Description": "BY TRANSFER-INB\nIMPS817716113199/97053523\n91/XX6869/-",
         "Ref No./Cheque\nNo.": "MAC00013334487\n3\nMAC00013334487\n3",
         "Debit": "",
         "Credit": "1,200.00",
-        "Balance": "77,960.99"
+        "Balance": "77,960.99",
+        "Date": "26-Jun-2018"
     },
     {
-        "Txn Date": "10 Jul 2018",
-        "Value\nDate": "10 Jul 2018",
         "Description": "WITHDRAWAL TRANSFER--",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n31942153944",
         "Debit": "10,000.00",
         "Credit": "",
-        "Balance": "67,960.99"
+        "Balance": "67,960.99",
+        "Date": "10-Jul-2018"
     },
     {
-        "Txn Date": "20 Jul 2018",
-        "Value\nDate": "20 Jul 2018",
         "Description": "TO CLEARING-CIT BHARTI\nAIRTEL AP POSTPAI-323947",
         "Ref No./Cheque\nNo.": "323947",
         "Debit": "2,714.00",
         "Credit": "",
-        "Balance": "65,246.99"
+        "Balance": "65,246.99",
+        "Date": "20-Jul-2018"
     },
     {
-        "Txn Date": "30 Jul 2018",
-        "Value\nDate": "30 Jul 2018",
         "Description": "TO DEBIT THROUGH\nCHEQUE-SBI M\nVENKATESWARA REDDY\n30902590252-367952",
         "Ref No./Cheque\nNo.": "367952",
         "Debit": "10,000.00",
         "Credit": "",
-        "Balance": "55,246.99"
+        "Balance": "55,246.99",
+        "Date": "30-Jul-2018"
     },
     {
-        "Txn Date": "31 Jul 2018",
-        "Value\nDate": "31 Jul 2018",
         "Description": "BY TRANSFER-\n8280782906036 21BZ3SB IOC\nRef No3000072780-",
         "Ref No./Cheque\nNo.": "TRANSFER\nFROM\n4599399105213",
         "Debit": "",
         "Credit": "305.83",
-        "Balance": "55,552.82"
+        "Balance": "55,552.82",
+        "Date": "31-Jul-2018"
     },
     {
-        "Txn Date": "10 Aug\n2018",
-        "Value\nDate": "10 Aug\n2018",
         "Description": "WITHDRAWAL TRANSFER--",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n31942153944",
         "Debit": "10,000.00",
         "Credit": "",
-        "Balance": "45,552.82"
+        "Balance": "45,552.82",
+        "Date": "10-Aug-2018"
     },
     {
-        "Txn Date": "10 Aug\n2018",
-        "Value\nDate": "10 Aug\n2018",
         "Description": "BY TRANSFER-INB\nIMPS822208411175/22222222\n22/XX0317/Remitly Tr-",
         "Ref No./Cheque\nNo.": "MAB00015001327\n7\nMAB00015001327\n7",
         "Debit": "",
         "Credit": "2,00,000.00",
-        "Balance": "2,45,552.82"
+        "Balance": "2,45,552.82",
+        "Date": "10-Aug-2018"
     },
     {
-        "Txn Date": "10 Aug\n2018",
-        "Value\nDate": "10 Aug\n2018",
         "Description": "BY TRANSFER-INB\nIMPS822217573306/22222222\n22/XX0317/Remitly Tr-",
         "Ref No./Cheque\nNo.": "MAC00015021678\n5\nMAC00015021678\n5",
         "Debit": "",
         "Credit": "50,000.00",
-        "Balance": "2,95,552.82"
+        "Balance": "2,95,552.82",
+        "Date": "10-Aug-2018"
     },
     {
-        "Txn Date": "23 Aug\n2018",
-        "Value\nDate": "23 Aug\n2018",
         "Description": "BY TRANSFER-INB\nIMPS823522400136/22222222\n22/XX0317/Remitly Tr-",
         "Ref No./Cheque\nNo.": "MAC00015533779\n9\nMAC00015533779\n9",
         "Debit": "",
         "Credit": "2,00,000.00",
-        "Balance": "4,95,552.82"
+        "Balance": "4,95,552.82",
+        "Date": "23-Aug-2018"
     },
     {
-        "Txn Date": "24 Aug\n2018",
-        "Value\nDate": "24 Aug\n2018",
         "Description": "CASH CHEQUE-CASH\nWITHDRAWAL BY CHEQUE-\n367954",
         "Ref No./Cheque\nNo.": "367954",
         "Debit": "4,00,000.00",
         "Credit": "",
-        "Balance": "95,552.82"
+        "Balance": "95,552.82",
+        "Date": "24-Aug-2018"
     },
     {
-        "Txn Date": "28 Aug\n2018",
-        "Value\nDate": "28 Aug\n2018",
         "Description": "BY TRANSFER-INB\nIMPS824019717310/22222222\n22/XX0317/Remitly Tr-",
         "Ref No./Cheque\nNo.": "MAA00016919300\n9\nMAA00016919300\n9",
         "Debit": "",
         "Credit": "2,00,000.00",
-        "Balance": "2,95,552.82"
+        "Balance": "2,95,552.82",
+        "Date": "28-Aug-2018"
     },
     {
-        "Txn Date": "29 Aug\n2018",
-        "Value\nDate": "29 Aug\n2018",
         "Description": "CHEQUE WDL-WITHDRAWAL\nTRANSFER BY CHEQUE-\n367955",
         "Ref No./Cheque\nNo.": "TRANSFER\nFROM\n10111159879 /\n367955",
         "Debit": "2,00,000.00",
         "Credit": "",
-        "Balance": "95,552.82"
+        "Balance": "95,552.82",
+        "Date": "29-Aug-2018"
     },
     {
-        "Txn Date": "1 Sep 2018",
-        "Value\nDate": "1 Sep 2018",
         "Description": "CHEQUE WDL- CHQ TR-\n367956",
         "Ref No./Cheque\nNo.": "TRANSFER\nFROM\n10111159879 /\n367956",
         "Debit": "42,000.00",
         "Credit": "",
-        "Balance": "53,552.82"
+        "Balance": "53,552.82",
+        "Date": "01-Sep-2018"
     },
     {
-        "Txn Date": "10 Sep\n2018",
-        "Value\nDate": "10 Sep\n2018",
         "Description": "WITHDRAWAL TRANSFER--",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n31942153944",
         "Debit": "10,000.00",
         "Credit": "",
-        "Balance": "43,552.82"
+        "Balance": "43,552.82",
+        "Date": "10-Sep-2018"
     },
     {
-        "Txn Date": "25 Sep\n2018",
-        "Value\nDate": "25 Sep\n2018",
         "Description": "CREDIT INTEREST--",
         "Ref No./Cheque\nNo.": "",
         "Debit": "",
         "Credit": "912.00",
-        "Balance": "44,464.82"
+        "Balance": "44,464.82",
+        "Date": "25-Sep-2018"
     },
     {
-        "Txn Date": "3 Oct 2018",
-        "Value\nDate": "3 Oct 2018",
         "Description": "BULK POSTING-18077478825\nITD TAX REFUND AY 18-19\nPAN AFWPM8591B-",
         "Ref No./Cheque\nNo.": "",
         "Debit": "",
         "Credit": "25,590.00",
-        "Balance": "70,054.82"
+        "Balance": "70,054.82",
+        "Date": "03-Oct-2018"
     },
     {
-        "Txn Date": "5 Oct 2018",
-        "Value\nDate": "5 Oct 2018",
         "Description": "BY TRANSFER-RTGS UTR\nNO:\nYESBR52018100558140100-\n2221 boles st",
         "Ref No./Cheque\nNo.": "TRANSFER\nFROM\n3199860044304 /\n2221 boles st",
         "Debit": "",
         "Credit": "3,62,700.00",
-        "Balance": "4,32,754.82"
+        "Balance": "4,32,754.82",
+        "Date": "05-Oct-2018"
     },
     {
-        "Txn Date": "5 Oct 2018",
-        "Value\nDate": "5 Oct 2018",
         "Description": "CHEQUE WDL-WITHDRAWAL\nTRANSFER BY CHEQUE-\n367957",
         "Ref No./Cheque\nNo.": "TRANSFER\nFROM\n10111159879 /\n367957",
         "Debit": "4,00,000.00",
         "Credit": "",
-        "Balance": "32,754.82"
+        "Balance": "32,754.82",
+        "Date": "05-Oct-2018"
     },
     {
-        "Txn Date": "9 Oct 2018",
-        "Value\nDate": "9 Oct 2018",
         "Description": "BULK POSTING-ACHCr\nUBIN00072000013390\nBHARATSANCHARN-",
         "Ref No./Cheque\nNo.": "",
         "Debit": "",
         "Credit": "2,454.00",
-        "Balance": "35,208.82"
+        "Balance": "35,208.82",
+        "Date": "09-Oct-2018"
     },
     {
-        "Txn Date": "10 Oct\n2018",
-        "Value\nDate": "10 Oct\n2018",
         "Description": "WITHDRAWAL TRANSFER--",
         "Ref No./Cheque\nNo.": "TRANSFER TO\n31942153944",
         "Debit": "10,000.00",
         "Credit": "",
-        "Balance": "25,208.82"
+        "Balance": "25,208.82",
+        "Date": "10-Oct-2018"
     },
     {
-        "Txn Date": "16 Oct\n2018",
-        "Value\nDate": "16 Oct\n2018",
         "Description": "BY TRANSFER-INB Gift to\nrelatives / Friends-",
         "Ref No./Cheque\nNo.": "ITT1756247\nTRANSFER\nFROM\n10111159879",
         "Debit": "",
         "Credit": "1,50,000.00",
-        "Balance": "1,75,208.82"
+        "Balance": "1,75,208.82",
+        "Date": "16-Oct-2018"
     }
 ]

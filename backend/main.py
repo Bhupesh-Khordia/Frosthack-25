@@ -36,8 +36,8 @@ def batch_convert_pdfs_to_json(pdf_folder, output_folder):
         extract_table_from_pdf(pdf_path, json_path)
         print(f"Converted: {pdf_file} -> {json_path}")
 
-# Example Usage
-batch_convert_pdfs_to_json('D:\Important Documents\Placement\Projects\pathway-classifier\input', 'D:\Important Documents\Placement\Projects\pathway-classifier\data')
+# # Example Usage
+# batch_convert_pdfs_to_json('D:\Important Documents\Placement\Projects\pathway-classifier\input', 'D:\Important Documents\Placement\Projects\pathway-classifier\data')
 
 import os
 os.environ["HF_TOKEN"] = "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"
