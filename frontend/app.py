@@ -71,6 +71,23 @@ def charts_page():
         if user_query:
             st.write(f"🗨️ *You asked:* {user_query}")
             st.write("🔎 Generating chart...")
+            response = requests.post(
+                "http://localhost:8002/rest/retrieve_closest",
+                json={"query": user_query},
+            )
+            if response.status_code == 200:
+                path = response.json().get('path')
+                query_response = requests.post(
+                    "http://localhost:8003/rest/plot_chart",
+                    json={"query": user_query, "path": path},
+                )
+                if query_response.status_code == 200:
+                    answer = query_response.json().get('answer')
+                    st.success(f"🤖 AI Response: {answer}")
+                else:
+                    st.error(f"❗ Failed to plot the chart. Error: {query_response.text}")
+            else:
+                st.error(f"❗ Failed to plot the chart. Error: {response.text}")
     else:
         st.warning("⚠️ Please upload at least one PDF before trying to generate a chart.")
 
@@ -101,7 +118,7 @@ def main():
 
     # Sidebar Section with Cool Design
     with st.sidebar:
-        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", caption="Bank Assistant", use_container_width=True)
+        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", caption="Bank Assistant")
         st.markdown("## 🌟 Features")
         page = st.radio("🚀 Navigate to:", ["📥 Upload Bank Statements", "💬 Ask AI Questions", "📈 Generate Charts", "📊 Track Expenses"])
         st.markdown("---")
