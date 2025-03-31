@@ -7,17 +7,17 @@ Welcome to our **Real-time Personal Finance Tracker** project for FrostHack 2025
 
 Here are some screenshots of the application in action:
 
-###
-![Home Page](screenshots/home_page.png)
+### PDF Upload Page
+![PDF Upload Page](screenshots/home_page.png)
 
-###
-![PDF Upload](screenshots/pdf_upload.png)
+### AI Chat
+![AI Chat](screenshots/ai_chat.png)
 
-###
-![Query Results](screenshots/query_results.png)
+### Generate Chart Using AI
+![Generate Chart Using AI](screenshots/generate_chart_ai.png)
 
-###
-![Visualization Example](screenshots/visualization_example.png)
+### Plots of Insights
+![Plots of Insights](screenshots/plots.png)
 
 ### 🔍 How It Works
 1. **PDF Processing**: 
