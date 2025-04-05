@@ -23,7 +23,7 @@ class QueryResponse(Model):
 class EmptyMessage(Model):
     pass
  
-agent = Agent(name="Rest API", seed="fetch", port=8000, endpoint=["http://localhost:8000/submit"])
+agent = Agent(name="Rest API", seed="fetch", port=8000, endpoint=["http://localhost:8000/submit"], mailbox=True)
 
 import subprocess
 
