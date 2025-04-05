@@ -2,8 +2,14 @@ import os
 import google.generativeai as genai
 import sys
 from dotenv import load_dotenv
+import requests
+import json
 
 load_dotenv()
+# For ASI
+# api_key = os.getenv("ASI_API_KEY")
+
+# For Gemini
 api_key = os.getenv("GEMINI_API_KEY")
 
 def read_txt_file(file_path):
@@ -38,6 +44,65 @@ def query_gemini(context, query):
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
+    
+def query_asi(context, query):
+    """
+    Generates an answer based on a query and context using the ASI API.
+
+    Args:
+        context: The relevant information to use for answering the query.
+        query: The user's question or request.
+
+    Returns:
+        The generated answer as a string, or None if an error occurred.
+    """
+    try:
+        url = "https://api.asi1.ai/v1/chat/completions"
+
+        prompt = f"""
+        Context: {context}
+
+        Question: {query}
+        """
+
+        payload = json.dumps({
+            "model": "asi1-mini",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": 0,
+            "stream": False,  # Disable streaming to simplify response handling
+            "max_tokens": 100  # Set a reasonable token limit for the response
+        })
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + api_key,  # Ensure space after 'Bearer'
+        }
+
+        response = requests.post(url, headers=headers, data=payload)
+
+        # Parse the JSON response
+        if response.status_code == 200:
+            response_data = response.json()
+            # Extract the answer text from the response
+            if "choices" in response_data and len(response_data["choices"]) > 0:
+                answer = response_data["choices"][0]["message"]["content"]
+                answer = answer[8:]
+                return answer
+            else:
+                print("Error: Unexpected response format from API.")
+                return None
+        else:
+            print(f"Error: API request failed with status code {response.status_code}.")
+            return None
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
 def main():
     if len(sys.argv) < 3:
@@ -64,6 +129,9 @@ def main():
 
     # Query Gemini
     answer = query_gemini(context, user_query)
+
+    # Query ASI
+    # answer = query_asi(context, user_query)
 
     # Print the answer
     print(answer)
