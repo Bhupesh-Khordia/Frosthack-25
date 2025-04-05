@@ -29,6 +29,30 @@ def upload_page():
                     st.success(f"🤖 Agent Response: {response.json().get('text')}")
                 else:
                     st.error(f"❗ Failed to process {uploaded_file.name}. Error: {response.text}")
+    # Delete Uploads Button
+    st.markdown("---")
+    if st.button("🗑️ Delete Uploads"):
+        import glob
+
+        folders_to_clear = ["../backend/data", "../backend/input", "../backend/output"]
+        files_to_delete = []
+
+        for folder in folders_to_clear:
+            files_to_delete += glob.glob(f"{folder}/*")
+
+        # Add .txt and .index files in backend folder
+        files_to_delete += glob.glob("../backend/*.txt")
+        files_to_delete += glob.glob("../backend/*.index")
+
+        deleted_files = []
+        for file_path in files_to_delete:
+            try:
+                os.remove(file_path)
+                deleted_files.append(file_path)
+            except Exception as e:
+                st.error(f"❌ Error deleting {file_path}: {e}")
+
+        st.success(f"✅ Deleted {len(deleted_files)} files successfully!")
 
 def assistant_page():
     st.subheader("💬 AI Assistant")
