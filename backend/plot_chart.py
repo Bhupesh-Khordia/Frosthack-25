@@ -3,9 +3,15 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from google.genai import types
 import sys
+import requests
+import json
 
 load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
+# For ASI
+api_key = os.getenv("ASI_API_KEY")
+
+# For Gemini
+# api_key = os.getenv("GEMINI_API_KEY")
 
 def read_txt_file(file_path):
     """Read the content of a text file."""
@@ -43,6 +49,69 @@ def query_gemini(context, query):
         print(f"An error occurred: {e}")
         return None
 
+
+def query_asi(context, query):
+    """
+    Generates an answer based on a query and context using the ASI API.
+
+    Args:
+        context: The relevant information to use for answering the query.
+        query: The user's question or request.
+
+    Returns:
+        The generated answer as a string, or None if an error occurred.
+    """
+    try:
+        url = "https://api.asi1.ai/v1/chat/completions"
+
+        prompt = f"""
+        Context: {context}
+
+        Question: {query}
+
+        Instructions: Generate code in python using the library plotly.express as px and the final plot should be stored in variable named fig. Only write the code and nothing else. Give python code only in plain text(not in any other format) with proper indentation that can be run from any other device without any modification. Do not create some functions, just give simple code to plot, last line should be fig = ..., no other line. If the arrays in data file that you create are of different length then trim the arrays to min length among them so that plotting them doesn't give error. Do this step always, do not forget.
+        """
+
+        payload = json.dumps({
+            "model": "asi1-mini",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": 0,
+            "stream": False,  # Disable streaming to simplify response handling
+            "max_tokens": 8000  # Set a reasonable token limit for the response
+        })
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + api_key,  # Ensure space after 'Bearer'
+        }
+
+        response = requests.post(url, headers=headers, data=payload)
+
+        # Parse the JSON response
+        if response.status_code == 200:
+            response_data = response.json()
+            # Extract the answer text from the response
+            if "choices" in response_data and len(response_data["choices"]) > 0:
+                answer = response_data["choices"][0]["message"]["content"]
+                return answer
+            else:
+                print("Error: Unexpected response format from API.")
+                return None
+        else:
+            print(f"Error: API request failed with status code {response.status_code}.")
+            return None
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+    
+
+
 def main():
     if len(sys.argv) < 3:
         print("Error: No query provided.")
@@ -67,7 +136,10 @@ def main():
     # user_query = "How much money was debited on 3 May 2018?"
 
     # Query Gemini
-    answer = query_gemini(context, user_query)
+    # answer = query_gemini(context, user_query)
+
+    # Query ASI
+    answer = query_asi(context, user_query)
 
     # Print the answer
     print(answer)

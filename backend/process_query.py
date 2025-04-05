@@ -7,10 +7,10 @@ import json
 
 load_dotenv()
 # For ASI
-# api_key = os.getenv("ASI_API_KEY")
+api_key = os.getenv("ASI_API_KEY")
 
 # For Gemini
-api_key = os.getenv("GEMINI_API_KEY")
+# api_key = os.getenv("GEMINI_API_KEY")
 
 def read_txt_file(file_path):
     """Read the content of a text file."""
@@ -75,7 +75,7 @@ def query_asi(context, query):
             ],
             "temperature": 0,
             "stream": False,  # Disable streaming to simplify response handling
-            "max_tokens": 100  # Set a reasonable token limit for the response
+            "max_tokens": 8000  # Set a reasonable token limit for the response
         })
         headers = {
             'Content-Type': 'application/json',
@@ -91,7 +91,6 @@ def query_asi(context, query):
             # Extract the answer text from the response
             if "choices" in response_data and len(response_data["choices"]) > 0:
                 answer = response_data["choices"][0]["message"]["content"]
-                answer = answer[8:]
                 return answer
             else:
                 print("Error: Unexpected response format from API.")
@@ -128,10 +127,10 @@ def main():
     # user_query = "How much money was debited on 3 May 2018?"
 
     # Query Gemini
-    answer = query_gemini(context, user_query)
+    # answer = query_gemini(context, user_query)
 
     # Query ASI
-    # answer = query_asi(context, user_query)
+    answer = query_asi(context, user_query)
 
     # Print the answer
     print(answer)
