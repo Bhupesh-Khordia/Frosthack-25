@@ -45,45 +45,6 @@ async def process_pdf(ctx: Context, req: Request) -> Response:
             agent_address=ctx.agent.address,
             timestamp=int(time.time()),
         )
-    
-@agent.on_rest_post("/rest/process_query", Query, Response)
-async def process_query(ctx: Context, req: Query) -> Response:
-    ctx.logger.info(f"Processing Query: {req.query}")
-    try:
-        # Call pdf.py with the uploaded file path
-        result = subprocess.run(["python", "process_query.py", req.query], capture_output=True, text=True)
-        ctx.logger.info(result)
-        return Response(
-            text=f"Successfully processed Query",
-            # response=result.stdout.strip(),
-            agent_address=ctx.agent.address,
-            timestamp=int(time.time()),
-        )
-    except Exception as e:
-        ctx.logger.error(f"Error processing Query: {e}")
-        return Response(
-            text=f"Failed to process query: {e}",
-            agent_address=ctx.agent.address,
-            timestamp=int(time.time()),
-        )
- 
-@agent.on_rest_get("/rest/get", Response)
-async def handle_get(ctx: Context) -> Dict[str, Any]:
-    ctx.logger.info("Received GET request")
-    return {
-        "timestamp": int(time.time()),
-        "text": "Hello from the GET handler!",
-        "agent_address": ctx.agent.address,
-    }
- 
-@agent.on_rest_post("/rest/post", Request, Response)
-async def handle_post(ctx: Context, req: Request) -> Response:
-    ctx.logger.info("Received POST request")
-    return Response(
-        text=f"Received: {req.text}",
-        agent_address=ctx.agent.address,
-        timestamp=int(time.time()),
-    )
- 
+     
 if __name__ == "__main__":
     agent.run()

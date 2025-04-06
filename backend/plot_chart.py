@@ -118,7 +118,7 @@ def main():
         return
 
     # Path to the output folder
-    output_folder = r"D:\Important Documents\Placement\Projects\Frosthack-25\backend\output"
+    output_folder = r"C:\Users\Siddhant\Desktop\Frosthack-25\backend\output"
 
     file_name = sys.argv[2]  # The name of the text file to read
 

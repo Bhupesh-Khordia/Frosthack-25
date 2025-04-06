@@ -5,9 +5,9 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 
 # Define correct file paths
-OUTPUT_FOLDER = r"D:\Important Documents\Placement\Projects\Frosthack-25\backend\output"
-EMBEDDINGS_FILE = r"D:\Important Documents\Placement\Projects\Frosthack-25\backend\embeddings.index"
-CHUNK_MAP_FILE = r"D:\Important Documents\Placement\Projects\Frosthack-25\backend\chunk_map.txt"
+OUTPUT_FOLDER = r"C:\Users\Siddhant\Desktop\Frosthack-25\backend\output"
+EMBEDDINGS_FILE = r"C:\Users\Siddhant\Desktop\Frosthack-25\backend\embeddings.index"
+CHUNK_MAP_FILE = r"C:\Users\Siddhant\Desktop\Frosthack-25\backend\chunk_map.txt"
 
 # Ensure the output folder exists
 if not os.path.exists(OUTPUT_FOLDER):
