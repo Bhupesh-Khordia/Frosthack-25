@@ -6,20 +6,11 @@ from uagents import Agent, Context, Model
 class Request(Model):
     text: str
 
-class Query(Model):
-    query: str
- 
 class Response(Model):
     timestamp: int
     text: str
     agent_address: str
 
-class QueryResponse(Model):
-    timestamp: int
-    text: str
-    agent_address: str
-    response: str
- 
 class EmptyMessage(Model):
     pass
  
