@@ -23,7 +23,7 @@ def upload_page():
                 st.write("🔎 Processing file...")
                 response = requests.post(
                     "http://localhost:8000/rest/process_pdf",
-                    json={"text": file_path},
+                    json={"text": uploaded_file.name},  # ✅ FIXED!
                 )
                 if response.status_code == 200:
                     st.success(f"🤖 Agent Response: {response.json().get('text')}")
