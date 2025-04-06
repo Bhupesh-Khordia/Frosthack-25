@@ -1,6 +1,9 @@
 import streamlit as st
 import requests
 import os
+import re
+import plotly.express as px
+import datetime
 
 def upload_page():
     st.subheader("📥 Upload PDF Files")
@@ -103,32 +106,11 @@ def charts_page():
             )
             if response.status_code == 200:
                 path = response.json().get('path')
-                query_response = requests.post(
-                    "http://localhost:8003/rest/plot_chart",
-                    json={"query": user_query, "path": path},
-                )
-                if query_response.status_code == 200:
-                    answer = query_response.json().get('answer')
-                    answer = answer[9 : -3]
-                    local_vars = {}
-                    exec(answer, {}, local_vars)
-    
-                    # Get the figure from local_vars
-                    fig = local_vars.get("fig")
-    
-                    # Display the plot if fig exists
-                    if fig:
-                        st.title("📈 Generated Chart")
-                        st.plotly_chart(fig, use_container_width=True)
-                    else:
-                        st.error("No figure found in the executed code.")
-                else:
-                    st.error(f"❗ Failed to plot the chart. Error: {query_response.text}")
+                fetch_and_plot_chart(user_query, path, "📈 Generated Chart")
             else:
-                st.error(f"❗ Failed to plot the chart. Error: {response.text}")
+                st.error(f"❗ Failed to retrieve document path. Error: {response.text}")
     else:
         st.warning("⚠️ Please upload at least one PDF before trying to generate a chart.")
-
 
 
 
@@ -139,34 +121,55 @@ def fetch_and_plot_chart(prompt, path, title):
     )
     if query_response.status_code == 200:
         answer = query_response.json().get('answer')
-        answer = answer[9 : -3]
+
+        # 🔍 Show raw code
+        st.code(answer, language="python")
+
+        # 🧼 Remove markdown wrappers if any
+        answer = re.sub(r"^```python\s*", "", answer)
+        answer = re.sub(r"\s*```$", "", answer)
+
+        # 🛠️ Ensure 'fig' is returned if not explicitly assigned
+        if "fig" not in answer:
+            answer += "\nfig"
+
         local_vars = {}
-        exec(answer, {}, local_vars)
-
-        fig = local_vars.get("fig")
-
-        if fig:
-            st.title(title)
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.error("No figure found in the executed code.")
+        try:
+            exec(answer, {"datetime": datetime, "px": px}, local_vars)
+            fig = local_vars.get("fig")
+            if fig:
+                st.title(title)
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.error("⚠️ No figure was found in the executed code.")
+        except Exception as e:
+            st.error(f"🚨 Failed to execute chart code: {e}")
     else:
         st.error(f"❗ Failed to plot the chart. Error: {query_response.text}")
 
+
 def track_page():
     st.subheader("📊 Track Insights")
-    uploaded_files = os.listdir("../backend/input")
+    input_folder = "../backend/input"
+    output_folder = "../backend/output"
+
+    uploaded_files = os.listdir(input_folder)
 
     if uploaded_files:
         selected_file = st.selectbox("Select a file to view insights:", uploaded_files)
-        file_path = selected_file[:-4] + "_cleaned.txt"
+        base_name = os.path.splitext(selected_file)[0]
+        file_path = f"{base_name}.txt"  # ✅ This matches what you save in output/
+        full_output_path = os.path.join(output_folder, file_path)
 
-        fetch_and_plot_chart("Generate a line plot showing trend of Balance.", file_path, "📈 Trend of Balance in Your Account")
-        fetch_and_plot_chart("Generate a bar plot showing distribution of credit and debit.", file_path, "📊 Categorized Expenses")
-        fetch_and_plot_chart("Generate a pie chart showing distribution of expenses and income.", file_path, "🥧 Expense Distribution")
-
+        if os.path.exists(full_output_path):
+            fetch_and_plot_chart("Generate a line plot showing trend of Balance.", file_path, "📈 Trend of Balance in Your Account")
+            fetch_and_plot_chart("Generate a bar plot showing distribution of credit and debit.", file_path, "📊 Categorized Expenses")
+            fetch_and_plot_chart("Generate a pie chart showing distribution of expenses and income.", file_path, "🥧 Expense Distribution")
+        else:
+            st.warning(f"⚠️ The file `{file_path}` does not exist in the output folder.\nPlease process the PDF first.")
     else:
         st.warning("⚠️ Please upload at least one PDF before trying to track insights.")
+
 
 
 def main():
