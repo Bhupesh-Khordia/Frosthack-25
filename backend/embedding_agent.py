@@ -1,14 +1,32 @@
+# embedding_agent.py
 import os
 import time
 import faiss
 import numpy as np
 from typing import Optional
 
+from pymongo import MongoClient
+from dotenv import load_dotenv
+
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from uagents import Agent, Context, Model
 
-from db import txt_collection, embedding_collection  # ✅ Using centralized DB setup
+# --- MongoDB Initialization (from db.py) ---
+# Load environment variables from .env
+load_dotenv()
+MONGO_URI = os.getenv("MONGODB_URI")
+
+# Create client and select DB
+client = MongoClient(MONGO_URI)
+db = client['frosthack_db']  # Use your preferred database name
+
+# Define collections
+pdf_collection = db['pdf_files']
+json_collection = db['json_files']
+txt_collection = db['txt_files']
+embedding_collection = db['embeddings']
+# -------------------------------------------
 
 # Initialize Agent
 class Query(Model):
@@ -20,16 +38,13 @@ class PathResponse(Model):
     agent_address: str
     path: Optional[str] = None
 
-
 class DummyRequest(Model):
     pass
 
 class FileListResponse(Model):
     files: list[str]
 
-
-
-agent = Agent(name="Rest API", seed="embed", port=8002, endpoint=["http://localhost:8002/submit"])
+agent = Agent(name="Rest API", seed="embed", port=8002, endpoint=["http://localhost:8002/submit"], mailbox=True)
 
 # Embedding model and splitter
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
@@ -44,7 +59,6 @@ def load_and_store_embeddings():
         return
 
     txt_docs = txt_collection.find()
-
     text_chunks = []
     chunk_map = []
 
@@ -65,18 +79,14 @@ def load_and_store_embeddings():
         print("[WARN] No valid chunks found.")
         return []
 
-    # Generate normalized embeddings
     embeddings_array = np.array(embeddings.embed_documents(text_chunks))
     embeddings_array = embeddings_array / np.linalg.norm(embeddings_array, axis=1, keepdims=True)
 
-    # Store index in FAISS
     index = faiss.IndexFlatIP(embeddings_array.shape[1])
     index.add(embeddings_array)
 
-    # Convert to bytes
     index_data = faiss.serialize_index(index)
 
-    # Store index and chunk map in MongoDB
     embedding_collection.delete_many({})
     embedding_collection.insert_one({
         "index": index_data.tobytes(),

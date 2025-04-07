@@ -3,10 +3,25 @@ import base64
 import io
 import pdfplumber
 import json
-from datetime import datetime, timezone  # Use timezone-aware datetime
-from uagents import Agent, Context, Model
+import os
+from datetime import datetime, timezone
 from bson.binary import Binary
-from db import pdf_collection, json_collection, txt_collection
+from pymongo import MongoClient
+from dotenv import load_dotenv
+from uagents import Agent, Context, Model
+
+# ------------------- Environment Setup -------------------
+
+load_dotenv()
+MONGO_URI = os.getenv("MONGODB_URI")
+
+client = MongoClient(MONGO_URI)
+db = client['frosthack_db']
+
+pdf_collection = db['pdf_files']
+json_collection = db['json_files']
+txt_collection = db['txt_files']
+embedding_collection = db['embeddings']  # Optional: useful for future vector integration
 
 # ------------------- UAgents Setup -------------------
 
@@ -157,10 +172,9 @@ def full_pipeline(base64_pdf: str, filename: str) -> str:
 @agent.on_rest_post("/rest/process_pdf", Request, Response)
 async def handle_pdf(ctx: Context, req: Request) -> Response:
     try:
-        
-        original_filename = req.filename  # already provided by frontend
+        original_filename = req.filename
         msg = full_pipeline(req.text, original_filename)
-                
+
         return Response(
             timestamp=int(time.time()),
             text=msg,
@@ -175,5 +189,6 @@ async def handle_pdf(ctx: Context, req: Request) -> Response:
         )
 
 # ------------------- Run Agent -------------------
+
 if __name__ == "__main__":
     agent.run()

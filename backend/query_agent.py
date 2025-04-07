@@ -1,19 +1,25 @@
+import os
 import time
+import json
+import requests
 from typing import Optional
 
+from pymongo import MongoClient
+from dotenv import load_dotenv
 from uagents import Agent, Context, Model
 
-import os
-import requests
-import json
-from dotenv import load_dotenv
-
-# Import from db.py
-from db import txt_collection
-
-# Load environment variables
+# === Load environment variables ===
 load_dotenv()
 ASI_API_KEY = os.getenv("ASI_API_KEY")
+MONGO_URI = os.getenv("MONGODB_URI")
+
+# === MongoDB Setup ===
+client = MongoClient(MONGO_URI)
+db = client['frosthack_db']
+pdf_collection = db['pdf_files']
+json_collection = db['json_files']
+txt_collection = db['txt_files']
+embedding_collection = db['embeddings']
 
 # === UAgent Definitions ===
 class Query(Model):
@@ -26,8 +32,16 @@ class QueryResponse(Model):
     agent_address: str
     answer: Optional[str]
 
-agent = Agent(name="Rest API", seed="query", port=8001, endpoint=["http://localhost:8001/submit"])
+# === Initialize Agent ===
+agent = Agent(
+    name="Rest API",
+    seed="query",
+    port=8001,
+    endpoint=["http://localhost:8001/submit"],
+    mailbox=True
+)
 
+# === ASI API Call ===
 def query_asi(context: str, query: str) -> Optional[str]:
     try:
         url = "https://api.asi1.ai/v1/chat/completions"
@@ -59,6 +73,7 @@ def query_asi(context: str, query: str) -> Optional[str]:
     except Exception as e:
         return f"Exception during ASI API call: {str(e)}"
 
+# === REST Endpoint for Query Processing ===
 @agent.on_rest_post("/rest/process_query", Query, QueryResponse)
 async def process_query(ctx: Context, req: Query) -> QueryResponse:
     ctx.logger.info(f"Processing Query: {req.query} on file: {req.path}")
@@ -84,5 +99,6 @@ async def process_query(ctx: Context, req: Query) -> QueryResponse:
         timestamp=int(time.time())
     )
 
+# === Run Agent ===
 if __name__ == "__main__":
     agent.run()

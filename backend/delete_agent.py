@@ -1,8 +1,23 @@
-from uagents import Agent, Context, Model
+import os
 import time
 import traceback
-from db import pdf_collection, json_collection, txt_collection, embedding_collection
+from pymongo import MongoClient
+from dotenv import load_dotenv
+from uagents import Agent, Context, Model
 
+# === Load environment variables from .env ===
+load_dotenv()
+MONGO_URI = os.getenv("MONGODB_URI")
+
+# === MongoDB Setup ===
+client = MongoClient(MONGO_URI)
+db = client['frosthack_db']
+pdf_collection = db['pdf_files']
+json_collection = db['json_files']
+txt_collection = db['txt_files']
+embedding_collection = db['embeddings']
+
+# === Agent Models ===
 class DeleteRequest(Model):
     pass
 
@@ -12,8 +27,10 @@ class DeleteResponse(Model):
     status: str
     message: str
 
-delete_agent = Agent(name="Delete Agent", seed="delete", port=8005, endpoint=["http://localhost:8005/submit"])
+# === Define Agent ===
+delete_agent = Agent(name="Delete Agent", seed="delete", port=8005, endpoint=["http://localhost:8005/submit"], mailbox=True)
 
+# === Endpoint to Clear All Collections ===
 @delete_agent.on_rest_post("/rest/clear_all_data", DeleteRequest, DeleteResponse)
 async def clear_all_data(ctx: Context, _: DeleteRequest) -> DeleteResponse:
     try:
@@ -40,5 +57,6 @@ async def clear_all_data(ctx: Context, _: DeleteRequest) -> DeleteResponse:
             message=str(e) or "Unknown error occurred"
         )
 
+# === Run the Agent ===
 if __name__ == "__main__":
     delete_agent.run()

@@ -5,13 +5,22 @@ import json
 import requests
 import asyncio
 from typing import Any, Dict
+from pymongo import MongoClient
 from dotenv import load_dotenv
 from uagents import Agent, Context, Model
-from db import txt_collection  # ✅ Now using MongoDB instead of local file system
 
-# Load API keys
+# === Load API keys and Mongo URI ===
 load_dotenv()
 api_key = os.getenv("ASI_API_KEY")
+MONGO_URI = os.getenv("MONGODB_URI")
+
+# === MongoDB Setup ===
+client = MongoClient(MONGO_URI)
+db = client['frosthack_db']
+pdf_collection = db['pdf_files']
+json_collection = db['json_files']
+txt_collection = db['txt_files']
+embedding_collection = db['embeddings']
 
 # === Agent Models ===
 class Query(Model):
@@ -25,12 +34,12 @@ class QueryResponse(Model):
     answer: str
 
 # === Define Agent ===
-agent = Agent(name="Rest API", seed="query", port=8003, endpoint=["http://localhost:8003/submit"])
+agent = Agent(name="Rest API", seed="query", port=8003, endpoint=["http://localhost:8003/submit"], mailbox=True)
 
 # === Utility Functions ===
 def get_txt_from_mongodb(filename: str) -> str:
     doc = txt_collection.find_one({"filename": filename})
-    if not doc:
+    if not doc or "content" not in doc:
         raise FileNotFoundError(f"No TXT entry found in MongoDB with filename: {filename}")
     return doc["content"]
 
@@ -80,9 +89,9 @@ async def plot_chart(ctx: Context, req: Query) -> QueryResponse:
     ctx.logger.info(f"📊 Plotting chart for query: {req.query} on file {req.path}")
 
     try:
-        context_data = get_txt_from_mongodb(req.path)  # ✅ Read TXT content from MongoDB
+        context_data = get_txt_from_mongodb(req.path)
 
-        # ✅ Use asyncio's executor pattern
+        # Use asyncio executor to run sync ASI query function
         loop = asyncio.get_running_loop()
         raw_answer = await loop.run_in_executor(None, query_asi, ctx, context_data, req.query)
 
@@ -105,7 +114,6 @@ async def plot_chart(ctx: Context, req: Query) -> QueryResponse:
             answer="",
             timestamp=int(time.time()),
         )
-
 
 # === Run the Agent ===
 if __name__ == "__main__":
