@@ -34,7 +34,7 @@ class QueryResponse(Model):
     answer: str
 
 # === Define Agent ===
-agent = Agent(name="Rest API", seed="query", port=8003, endpoint=["http://localhost:8003/submit"], mailbox=True)
+agent = Agent(name="Rest API", seed="chart", port=8003, endpoint=["http://localhost:8003/submit"], mailbox=True)
 
 # === Utility Functions ===
 def get_txt_from_mongodb(filename: str) -> str:
