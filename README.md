@@ -1,7 +1,11 @@
 # FrostHack 2025 - Real-time Personal Finance Tracker By Pathway & FetchAI
 
+---
+
 ## 📌 Overview
 Welcome to our **Real-time Personal Finance Tracker** project for FrostHack 2025! This project is designed to help users manage and query financial data effectively. The system processes bank statements in PDF format, extracts relevant financial data, and allows users to query this data using natural language. The architecture integrates multiple components to provide a seamless experience, including data extraction, embedding storage, query processing, and visualization.
+
+---
 
 ## 📸 Screenshots
 
@@ -19,29 +23,61 @@ Here are some screenshots of the application in action:
 ### Plots of Insights
 ![Plots of Insights](screenshots/plots.png)
 
-### 🔍 How It Works
-1. **PDF Processing**: 
-   - Users upload bank statements in PDF format through a **Streamlit web app**.
-   - The backend processes these PDFs using `pdfplumber` to extract tables and transactions, which are then standardized and converted into text files.
+---
 
-2. **Embedding and Storage**:
-   - Extracted text data is split into chunks and embedded using **HuggingFace sentence-transformers**.
-   - The embeddings are stored in a **FAISS index** for efficient similarity search.
+## Live Agents on AgentVerse
 
-3. **Query Processing**:
-   - Users can ask questions about their financial data through the web app.
-   - Queries are processed in two stages:
-      - **Retrieve Closest Document**: The system uses the FAISS index, integrated with **Pathway**, to find the most relevant document chunk for the query.
-      - **Answer Generation**: The retrieved chunk is passed to **Google Gemini AI** to generate a detailed answer.
+- **PDF Upload + Narration Generator**  
+  [View Agent](https://agentverse.ai/agents/details/agent1q0r7qpp84vv7n5m7hszp3uyy6vdnzx279s808he5vhf9un3k8zcpzpzp89k/profile)
 
-4. **Visualization**:
-   - Users can request visualizations (e.g., charts) based on their financial data. The system generates Python code using **Google Gemini AI** to create charts dynamically with **Plotly**.
+- **Query Handler + Context Retriever**  
+  [View Agent](https://agentverse.ai/agents/details/agent1q0z395082guwatyr5eul9quxmvd8q5v9fceeemlzvakkdzz0vkhs227q2qc/profile)
 
-### **Tech Stack**
-- **Frontend**: Streamlit for building an interactive web interface.
-- **Backend**: Python for data processing and dynamic chart generation and also used MONGODB for files & embeddings storage
-- **ASI**: For natural language query processing and visualization.
-- **Fetch.AI**: uAgents for defining REST APIs and managing backend functionalities.
+- **Chart Generator (Day-wise Breakdown)**  
+  [View Agent](https://agentverse.ai/agents/details/agent1qtheaw4fsctn7mgjtt6lh5tv5zpvs97evj3539wagetdvm28vx48v4ltxgx/profile)
+
+- **Finance Insights Engine**  
+  [View Agent](https://agentverse.ai/agents/details/agent1qv9knjh8jpzhtc4llcm6qau4gzezu8038u24lfpr5lg2sgvy5pf0u3v2t0f/profile)
+
+- **Delete Files From Database Agent**  
+  [View Agent](https://agentverse.ai/agents/details/agent1qwgeaveflephkuu282sammqmf03yh4pmfwe6z58uf966gf5mzh54cctz6zy/profile)
+
+---
+
+### How It Works
+
+1. **PDF Processing**  
+   - Users upload their bank statements in PDF format via a **Streamlit web app**.  
+   - A Fetch.ai agent receives the file, decodes the base64 content, and uses `pdfplumber` to extract tables and transaction details.  
+   - The parsed content is converted into structured JSON and narrated text for downstream processing.
+
+2. **Embedding and Storage**  
+   - The narrated text is chunked and embedded using **HuggingFace sentence-transformers**.  
+   - Embeddings, along with metadata, are stored in a **MongoDB Atlas** database.  
+   - A **custom FAISS index** is used for efficient document similarity search.
+
+3. **Query Processing**  
+   - Users ask questions about their financial data directly through the web interface.  
+   - The system performs:
+     - **Retrieval**: Finds the most relevant document chunks using the FAISS index.  
+     - **Answer Generation**: The retrieved content and query are sent to **Fetch.ai's ASI (Artificial Superintelligence Interface)**, which leverages powerful LLMs like Google Gemini to generate context-aware responses.
+
+4. **Visualization**  
+   - Users can request day-wise expense breakdowns and other financial visualizations.  
+   - A separate agent sends prompts to **ASI**, which returns Python code to dynamically generate interactive **Plotly** charts.
+
+---
+
+### Tech Stack
+
+- **Frontend**: Streamlit — for real-time file uploads, queries, and chart rendering.  
+- **Backend**: Python — handles parsing, chunking, embeddings, vector search, and chart execution.  
+- **Database**: MongoDB Atlas — used to store PDFs, parsed JSON, narrated TXT, and embeddings.  
+- **AI Interface**: **Fetch.ai’s ASI** — routes prompts to advanced LLMs (e.g., Google Gemini) for query answering and code generation.  
+- **Vector Search**: FAISS — for similarity-based retrieval of relevant document chunks.  
+- **Agents & APIs**: Fetch.ai UAgents — for hosting modular RESTful agents on **AgentVerse**, each handling specific backend tasks like PDF parsing, querying, and chart generation.
+
+
 
 ## 🛠 Running the Project Locally
 
