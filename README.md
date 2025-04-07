@@ -25,7 +25,7 @@ Here are some screenshots of the application in action:
    - The backend processes these PDFs using `pdfplumber` to extract tables and transactions, which are then standardized and converted into text files.
 
 2. **Embedding and Storage**:
-   - Extracted text data is split into chunks and embedded using **Pathway** with **HuggingFace sentence-transformers**.
+   - Extracted text data is split into chunks and embedded using **HuggingFace sentence-transformers**.
    - The embeddings are stored in a **FAISS index** for efficient similarity search.
 
 3. **Query Processing**:
@@ -39,9 +39,8 @@ Here are some screenshots of the application in action:
 
 ### **Tech Stack**
 - **Frontend**: Streamlit for building an interactive web interface.
-- **Backend**: Python for data processing and dynamic chart generation.
-- **Gemini**: For natural language query processing and visualization.
-- **Pathway**: For generating embeddings and perform similarity search.
+- **Backend**: Python for data processing and dynamic chart generation and also used MONGODB for files & embeddings storage
+- **ASI**: For natural language query processing and visualization.
 - **Fetch.AI**: uAgents for defining REST APIs and managing backend functionalities.
 
 ## 🛠 Running the Project Locally
@@ -58,25 +57,28 @@ Make sure you have the following installed:
    ```
 2. **Install Dependencies:**
    ```bash
-   pip install langchain langchain_community pathway[xpack-llm-docs] pdfplumber faiss-cpu google.generativeai google.genai uagents streamlit plotly sentence-transformers
+   pip install langchain langchain_community pdfplumber faiss-cpu google.generativeai google.genai uagents streamlit plotly sentence-transformers pymongo
    pip install -qU langchain_huggingface
    ```
 3. **Create a `.env` file:**
       Create a `.env` file in the root directory of the project and add your Gemini API Key to it:
       ```env
       # API keys
-      GEMINI_API_KEY=your_gemini_api_key
+      ASI_API_KEY=your_asi_api_key
+
+      #MONGODB
+      MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.n2g4kia.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
       ```
-      Replace `your_gemini_api_key` with your actual gemini key.
-4. **Adjust paths:**
-   Adjust folder path in `pdf.py`, `process_query.py`, `main.py`.
-5. **Run all agents in separate terminals:**
+      Replace `your_asi_api_key` with your actual asi key and `mongodb_uri` with your own mongodb_uri
+4. **Run all agents in separate terminals:**
    ```bash
    cd backend
    python run fetch_agent.py
    python run embedding_agent.py
    python run query_agent.py
    python run chart_agent.py
+   python run delete_agent.py
    ```
 6. **Run your app:**
    ```bash
