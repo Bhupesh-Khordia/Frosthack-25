@@ -7,6 +7,7 @@ import asyncio
 from typing import Any, Dict
 from dotenv import load_dotenv
 from uagents import Agent, Context, Model
+from db import txt_collection  # ✅ Now using MongoDB instead of local file system
 
 # Load API keys
 load_dotenv()
@@ -15,7 +16,7 @@ api_key = os.getenv("ASI_API_KEY")
 # === Agent Models ===
 class Query(Model):
     query: str
-    path: str
+    path: str  # path here is just the filename used to look up in MongoDB
 
 class QueryResponse(Model):
     timestamp: int
@@ -27,9 +28,11 @@ class QueryResponse(Model):
 agent = Agent(name="Rest API", seed="query", port=8003, endpoint=["http://localhost:8003/submit"])
 
 # === Utility Functions ===
-def read_txt_file(file_path):
-    with open(file_path, "r", encoding="utf-8") as f:
-        return f.read()
+def get_txt_from_mongodb(filename: str) -> str:
+    doc = txt_collection.find_one({"filename": filename})
+    if not doc:
+        raise FileNotFoundError(f"No TXT entry found in MongoDB with filename: {filename}")
+    return doc["content"]
 
 def query_asi(ctx, context, query):
     try:
@@ -75,17 +78,11 @@ def extract_python_code(text: str) -> str:
 @agent.on_rest_post("/rest/plot_chart", Query, QueryResponse)
 async def plot_chart(ctx: Context, req: Query) -> QueryResponse:
     ctx.logger.info(f"📊 Plotting chart for query: {req.query} on file {req.path}")
-    
+
     try:
-        output_folder = os.path.abspath("../backend/output")
-        txt_file = os.path.join(output_folder, req.path)
+        context_data = get_txt_from_mongodb(req.path)  # ✅ Read TXT content from MongoDB
 
-        if not os.path.exists(txt_file):
-            raise FileNotFoundError(f"{txt_file} does not exist.")
-
-        context_data = read_txt_file(txt_file)
-
-        # ✅ Use asyncio's executor pattern instead of ctx.run_in_executor
+        # ✅ Use asyncio's executor pattern
         loop = asyncio.get_running_loop()
         raw_answer = await loop.run_in_executor(None, query_asi, ctx, context_data, req.query)
 

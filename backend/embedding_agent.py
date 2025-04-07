@@ -2,17 +2,13 @@ import os
 import time
 import faiss
 import numpy as np
-from typing import Any, Dict, Optional
+from typing import Optional
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
-
 from uagents import Agent, Context, Model
 
-# File paths
-OUTPUT_FOLDER = r"C:\Users\Siddhant\Desktop\Frosthack-25\backend\output"
-EMBEDDINGS_FILE = r"C:\Users\Siddhant\Desktop\Frosthack-25\backend\embeddings.index"
-CHUNK_MAP_FILE = r"C:\Users\Siddhant\Desktop\Frosthack-25\backend\chunk_map.txt"
+from db import txt_collection, embedding_collection  # ✅ Using centralized DB setup
 
 # Initialize Agent
 class Query(Model):
@@ -22,78 +18,93 @@ class PathResponse(Model):
     timestamp: int
     text: str
     agent_address: str
-    path: Optional[str] = None 
+    path: Optional[str] = None
+
+
+class DummyRequest(Model):
+    pass
+
+class FileListResponse(Model):
+    files: list[str]
+
+
 
 agent = Agent(name="Rest API", seed="embed", port=8002, endpoint=["http://localhost:8002/submit"])
 
-# Load Embedding Model
+# Embedding model and splitter
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 splitter = CharacterTextSplitter()
 
-def preprocess_text(text):
-    text = text.lower().replace("\n", " ")
-    return text.strip()
+def preprocess_text(text: str) -> str:
+    return text.lower().replace("\n", " ").strip()
 
 def load_and_store_embeddings():
-    if not os.path.exists(OUTPUT_FOLDER):
-        return []
+    if txt_collection.count_documents({}) == 0:
+        print("No text documents found in MongoDB.")
+        return
 
-    texts, filenames = [], []
-
-    for file in os.listdir(OUTPUT_FOLDER):
-        if file.endswith(".txt"):
-            with open(os.path.join(OUTPUT_FOLDER, file), "r", encoding="utf-8") as f:
-                texts.append(f.read())
-                filenames.append(file)
-
-    if not texts:
-        return []
+    txt_docs = txt_collection.find()
 
     text_chunks = []
     chunk_map = []
-    for i, text in enumerate(texts):
-        chunks = splitter.split_text(text)
+
+    for doc in txt_docs:
+        narration = doc.get("content")
+        filename = doc.get("filename")
+
+        if not narration or not filename:
+            print(f"[WARN] Skipping document due to missing fields: {doc}")
+            continue
+
+        chunks = splitter.split_text(narration)
         chunks = [preprocess_text(chunk) for chunk in chunks]
         text_chunks.extend(chunks)
-        chunk_map.extend([filenames[i]] * len(chunks))
+        chunk_map.extend([filename] * len(chunks))
 
+    if not text_chunks:
+        print("[WARN] No valid chunks found.")
+        return []
+
+    # Generate normalized embeddings
     embeddings_array = np.array(embeddings.embed_documents(text_chunks))
     embeddings_array = embeddings_array / np.linalg.norm(embeddings_array, axis=1, keepdims=True)
 
+    # Store index in FAISS
     index = faiss.IndexFlatIP(embeddings_array.shape[1])
     index.add(embeddings_array)
-    faiss.write_index(index, EMBEDDINGS_FILE)
 
-    with open(CHUNK_MAP_FILE, "w", encoding="utf-8") as f:
-        for chunk_filename in chunk_map:
-            f.write(chunk_filename + "\n")
+    # Convert to bytes
+    index_data = faiss.serialize_index(index)
 
-    print(f"[INFO] Index and chunk map rebuilt with {len(chunk_map)} chunks.")
-    return filenames
+    # Store index and chunk map in MongoDB
+    embedding_collection.delete_many({})
+    embedding_collection.insert_one({
+        "index": index_data.tobytes(),
+        "chunk_map": chunk_map
+    })
+
+    print(f"[INFO] Stored {len(chunk_map)} chunks in MongoDB.")
+    return chunk_map
 
 def search_documents(query: str, top_k: int = 1):
-    # ✅ Automatically rebuild if missing
-    if not os.path.exists(EMBEDDINGS_FILE) or not os.path.exists(CHUNK_MAP_FILE):
-        print("[WARN] Index or chunk map missing. Rebuilding...")
+    record = embedding_collection.find_one()
+    if not record:
+        print("[WARN] No embeddings found. Rebuilding...")
         load_and_store_embeddings()
+        record = embedding_collection.find_one()
+        if not record:
+            print("[ERROR] Still no embeddings found.")
+            return None
 
-    if not os.path.exists(EMBEDDINGS_FILE) or not os.path.exists(CHUNK_MAP_FILE):
-        print("[ERROR] Rebuild failed or no data found.")
-        return None
+    index_data = record["index"]
+    chunk_map = record["chunk_map"]
 
-    index = faiss.read_index(EMBEDDINGS_FILE)
-    query = preprocess_text(query)
-    query_embedding = np.array([embeddings.embed_query(query)])
-    query_embedding = query_embedding / np.linalg.norm(query_embedding)
+    index = faiss.deserialize_index(np.frombuffer(index_data, dtype=np.uint8))
 
-    distances, indices = index.search(query_embedding, k=top_k)
+    query_vec = np.array([embeddings.embed_query(preprocess_text(query))])
+    query_vec = query_vec / np.linalg.norm(query_vec)
 
-    with open(CHUNK_MAP_FILE, "r", encoding="utf-8") as f:
-        chunk_map = [line.strip() for line in f.readlines()]
-
-    if not chunk_map:
-        print("[ERROR] Chunk map is empty after rebuild")
-        return None
+    distances, indices = index.search(query_vec, top_k)
 
     results = [(chunk_map[i], distances[0][j]) for j, i in enumerate(indices[0]) if i < len(chunk_map)]
 
@@ -109,13 +120,13 @@ async def retrieve_closest(ctx: Context, req: Query) -> PathResponse:
                 text="Query not found in the documents",
                 agent_address=ctx.agent.address,
                 path=None,
-                timestamp=int(time.time()),
+                timestamp=int(time.time())
             )
         return PathResponse(
             text="Retrieved closest statement successfully",
             agent_address=ctx.agent.address,
             path=closest_file,
-            timestamp=int(time.time()),
+            timestamp=int(time.time())
         )
     except Exception as e:
         ctx.logger.error(f"Error: {e}")
@@ -123,14 +134,17 @@ async def retrieve_closest(ctx: Context, req: Query) -> PathResponse:
             text=f"An error occurred: {e}",
             agent_address=ctx.agent.address,
             path=None,
-            timestamp=int(time.time()),
+            timestamp=int(time.time())
         )
-
-# # ✅ Optional: expose manual trigger if needed
-# @agent.on_rest_post("/rest/refresh_index")
-# async def manual_refresh_index(ctx: Context, _msg: Dict[str, Any]):
-#     filenames = load_and_store_embeddings()
-#     return {"status": "refreshed", "files_indexed": filenames}
+    
+@agent.on_rest_post("/rest/list_files", DummyRequest, FileListResponse)
+async def list_files(ctx: Context, req: DummyRequest) -> FileListResponse:
+    try:
+        files = txt_collection.distinct("filename")
+        return FileListResponse(files=files)
+    except Exception as e:
+        ctx.logger.error(f"Error listing files: {e}")
+        return FileListResponse(files=[])
 
 if __name__ == "__main__":
     load_and_store_embeddings()

@@ -4,21 +4,18 @@ from typing import Optional
 from uagents import Agent, Context, Model
 
 import os
-import google.generativeai as genai
 import requests
 import json
 from dotenv import load_dotenv
 
+# Import from db.py
+from db import txt_collection
+
 # Load environment variables
 load_dotenv()
-
 ASI_API_KEY = os.getenv("ASI_API_KEY")
-# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Folder containing text files
-OUTPUT_FOLDER = r"C:\Users\Siddhant\Desktop\Frosthack-25\backend\output"
-
-# Agent definitions
+# === UAgent Definitions ===
 class Query(Model):
     query: str
     path: str
@@ -30,11 +27,6 @@ class QueryResponse(Model):
     answer: Optional[str]
 
 agent = Agent(name="Rest API", seed="query", port=8001, endpoint=["http://localhost:8001/submit"])
-
-def read_txt_file(file_path):
-    """Read the content of a text file."""
-    with open(file_path, "r", encoding="utf-8") as f:
-        return f.read()
 
 def query_asi(context: str, query: str) -> Optional[str]:
     try:
@@ -70,19 +62,19 @@ def query_asi(context: str, query: str) -> Optional[str]:
 @agent.on_rest_post("/rest/process_query", Query, QueryResponse)
 async def process_query(ctx: Context, req: Query) -> QueryResponse:
     ctx.logger.info(f"Processing Query: {req.query} on file: {req.path}")
-    file_path = os.path.join(OUTPUT_FOLDER, req.path)
 
-    if not os.path.exists(file_path):
-        error_msg = f"File '{req.path}' does not exist."
+    doc = txt_collection.find_one({"filename": req.path})
+    if not doc or "content" not in doc:
+        error_msg = f"File '{req.path}' not found in database or missing content."
         ctx.logger.error(error_msg)
         return QueryResponse(
-            text="File not found",
+            text="File not found or invalid in DB",
             agent_address=ctx.agent.address,
             answer=error_msg,
             timestamp=int(time.time())
         )
 
-    context = read_txt_file(file_path)
+    context = doc["content"]
     answer = query_asi(context, req.query)
 
     return QueryResponse(
